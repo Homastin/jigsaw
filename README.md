@@ -5,7 +5,12 @@
 ## 1.简介
 
 > 微信小程序拼图验证
-
+  demo，旨在解微信小程序，滑动卡顿问题。
+  ```
+  滑动卡顿的根本原因是，view层和app service层通信过快。
+  解决方案：减少通信，利用wxs语法让view和app service 层只在滑动结束（touchEnd）进行通信
+  ```
+  
 ```$xslt
     本demo 提供两种滑块方式
     一. image方式
