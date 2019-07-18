@@ -1,0 +1,28 @@
+
+  <view class="wrapper">
+    <view class="jigsaw">
+      <view class="label">请完成安全验证</view>
+      <view class="captcha">
+        <canvas canvas-id="canvas" class="canvas"/>
+        <canvas canvas-id="block" class="block" style="width: {{blockW + 'px'}}; left: {{slideDistance + 'px'}} !important;"/>
+        <canvas canvas-id="third" class="third"/>
+        <view class="refresh-icon"/>
+        <view class="slider-container">
+          <movable-area>
+            <movable-view direction="horizontal" class="slider" bindchange="bindSlideChange" catchhtouchmove="bindTouchMove">
+              <text class="iconfont icon-youjiantou"/>
+            </movable-view>
+          </movable-area>
+          <view class="sliderText"  wx:if="{{isShowPrompt}}">向右滑动填充拼图</view>
+        </view>
+      </view>
+      <view class="msg"/>
+    </view>
+    <view class="button">
+      <button class="cu-btn" bindtap="createCanvas" data-canvasid="{{canvas}}">createCanvas</button>
+      <button class="cu-btn cu-btn-light" bindtap="createCanvas" data-canvasid="{{block}}">createBlock</button>
+      <button class="cu-btn cu-btn-light" bindtap="createCanvas" data-canvasid="{{third}}">createThird</button>
+      <button class="cu-btn" style="background-color: red;" bindtap="cleanCanvas">clean</button>
+      <button class="cu-btn" style="background-color: yellow;" bindtap="refresh">refresh</button>
+    </view>
+  </view>

@@ -1,0 +1,14 @@
+/**
+ * @author homastin
+ * @date 2019-05-29 20:42
+ * @Description: css 变量
+*/
+
+@function rpx($value) {
+  @return $value * 1rpx;
+}
+
+$fontColor: #333333;
+$primaryColor: #3074db;
+$fontSize: rpx(28);
+$themeColor: #1b59b7;

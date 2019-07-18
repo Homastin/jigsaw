@@ -1,0 +1,201 @@
+<template>
+  <view class="cu-modal {{ position }} {{ show ? 'show' : ''}} {{direction}} {{customClass}}" @tap='hideModal'>
+    <view class="cu-dialog basis-lg" catchtap="onTap">
+      <slot name="content"></slot>
+    </view>
+  </view>
+</template>
+<script>
+  /**
+   * @author homastin
+   * @date 2019-03-26 09:53
+   * @Description: 自定义模态框，普通窗口 侧滑窗口 底部窗口 对话窗口 图片窗口等
+   */
+
+  import wepy from 'wepy'
+
+  export default class CustomModal extends wepy.component {
+    props = {
+      /*
+      *   position_options :{
+      *     '': '默认普通窗口',
+      *     'bottom-modal': '底部窗口',
+      *     'top-modal': '头部窗口'
+      *     'drawer-modal': '侧边抽屉' 需要传一个额外的参数来控制方向 justify-start --> left || justify-end --> right
+      *   }
+      */
+      position: {
+        type: String,
+        twoWay: true,
+        default: ''
+      },
+      show: {
+        type: Boolean,
+        twoWay: true,
+        default: false
+      },
+      direction: {
+        type: String,
+        twoWay: true,
+        default: ''     // 默认为空值,当position 为left or right 此值需为justify-start or justify-end
+      },
+      customClass: {
+        type: String,
+        twoWay: true,
+        default: ''
+      }
+    }
+
+    methods = {
+      hideModal(e) {
+        this.show = false
+        this.$emit('modal-closed', e)
+        this.$apply()
+      },
+      onTap(e) {
+        this.$emit('modal-clicked', e)
+      }
+    }
+
+    onLoad() {
+
+    }
+  }
+</script>
+
+<style lang="scss" type="text/scss">
+  @import "../assets/styles/variable";
+
+  /* ==================
+           模态窗口
+   ==================== */
+  .justify-start {
+    justify-content: flex-start;
+  }
+
+  .justify-end {
+    justify-content: flex-end;
+  }
+
+  .cu-dialog {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: rpx(674);
+    max-width: 100%;
+    min-height: rpx(100);
+    background: #f8f8f8;
+    border-radius: rpx(20);
+    overflow: auto;
+  }
+
+  .cu-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1110;
+    opacity: 0;
+    outline: 0;
+    text-align: center;
+    -ms-transform: scale(1.185);
+    transform: scale(1.185);
+    backface-visibility: hidden;
+    perspective: rpx(2000);
+    background: rgba(120, 120, 120, 0.5);
+    transition: all 0.3s ease-in-out 0s;
+    pointer-events: none;
+
+    &::before {
+      content: "\200B";
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    &.show {
+      opacity: 1;
+      transition-duration: 0.3s;
+      -ms-transform: scale(1);
+      transform: scale(1);
+      overflow-x: hidden;
+      overflow-y: auto;
+      pointer-events: auto;
+    }
+
+    &.top-modal::before {
+      vertical-align: top;
+    }
+
+    &.top-modal {
+      .cu-dialog {
+        width: 100%;
+        border-radius: 0;
+      }
+    }
+
+    &.top-modal {
+      margin-top: rpx(-1000);
+    }
+
+    &.top-modal.show {
+      margin-top: 0;
+    }
+
+
+    &.bottom-modal::before {
+      vertical-align: bottom;
+    }
+
+    &.bottom-modal {
+      .cu-dialog {
+        width: 100%;
+        border-radius: 0;
+      }
+    }
+
+    &.bottom-modal {
+      margin-bottom: rpx(-100);
+    }
+
+    &.bottom-modal.show {
+      margin-bottom: 0;
+    }
+
+    &.drawer-modal {
+      transform: scale(1);
+      display: flex;
+    }
+
+    &.drawer-modal {
+      .cu-dialog {
+        height: 100%;
+        min-width: rpx(200);
+        border-radius: 0;
+        margin: initial;
+        transition-duration: 0.3s;
+      }
+    }
+
+    &.drawer-modal.justify-start {
+      .cu-dialog {
+        transform: translateX(-100%);
+      }
+    }
+
+    &.drawer-modal.justify-end {
+      .cu-dialog {
+        transform: translateX(100%);
+      }
+    }
+
+    &.drawer-modal.show {
+      .cu-dialog {
+        transform: translateX(0%);
+      }
+    }
+  }
+</style>

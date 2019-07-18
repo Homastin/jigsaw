@@ -1,0 +1,16 @@
+{
+	"description": "wechat miniapp jigsaw verify",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false
+	},
+	"compileType": "miniprogram",
+	"appid": "wxdb1e2d3a735703bc",
+	"projectname": "jigsaw",
+	"miniprogramRoot": "dist/",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {}
+}

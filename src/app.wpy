@@ -1,0 +1,45 @@
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/canvas'
+    ],
+    tabBar: {
+      "list": [{
+        "pagePath": "pages/index",
+        "text": "image",
+        "iconPath": './assets/images/image.png',
+        "selectedIconPath" : './assets/images/image_active.png'
+      }, {
+        "pagePath": "pages/canvas",
+        "text": "canvas",
+        "iconPath": './assets/images/canvas.png',
+        "selectedIconPath" : './assets/images/canvas_active.png'
+      }]
+    },
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'WeChat',
+      navigationBarTextStyle: 'black'
+    }
+  }
+
+  constructor () {
+    super()
+    this.use('promisify')
+    this.use('requestfix')
+  }
+
+}
+</script>
+<style lang="scss" type="text/scss">
+  @import "./assets/styles/variable";
+  @import "./assets/font/iconfont";
+</style>

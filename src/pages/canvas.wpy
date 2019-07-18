@@ -1,0 +1,347 @@
+<template>
+  <view class="wrapper">
+    <view class="jigsaw">
+      <view class="label">请完成安全验证</view>
+      <view class="captcha">
+        <canvas canvas-id="canvas" class="canvas"></canvas>
+        <canvas canvas-id="block" class="block" style="width: {{blockW + 'px'}}; left: {{slideDistance + 'px'}} !important;"></canvas>
+        <canvas canvas-id="third" class="third"></canvas>
+        <view class="refresh-icon"></view>
+        <view class="slider-container">
+          <movable-area>
+            <movable-view direction="horizontal" class="slider" bindchange="bindSlideChange" catchhtouchmove="bindTouchMove">
+              <text class="iconfont icon-youjiantou"></text>
+            </movable-view>
+          </movable-area>
+          <view class="sliderText" wx:if="{{isShowPrompt}}">向右滑动填充拼图</view>
+        </view>
+      </view>
+      <view class="msg"></view>
+    </view>
+    <view class="button">
+      <button class="cu-btn" @tap="createCanvas" data-canvasid="{{canvas}}">createCanvas</button>
+      <button class="cu-btn cu-btn-light" @tap="createCanvas" data-canvasid="{{block}}">createBlock</button>
+      <button class="cu-btn cu-btn-light" @tap="createCanvas" data-canvasid="{{third}}">createThird</button>
+      <button class="cu-btn" style="background-color: red;" @tap="cleanCanvas">clean</button>
+      <button class="cu-btn" style="background-color: yellow;" @tap="refresh">refresh</button>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  /**
+   * @author hongfajing
+   * @date 2019-05-04 16:28
+   * @Description: 代码参考了jigsaw
+   */
+  export default class jigsaw extends wepy.page {
+
+    config = {
+      navigationBarTitleText: 'test verify',
+    };
+
+    data = {
+      imgSrc: '',        // 背景图路径
+      x: Number,         // 滑块坐标
+      y: Number,         // 滑块坐标
+      canvasW: 220,      // canvas width
+      canvasH: 110,      // canvas height
+      blockW: 220,       // block width
+      blockH: 110,       // block height
+      l: 30,             // 滑块边长
+      r: 7,              // 滑块半径
+      PI: Math.PI,       // 圆周率
+      L: 47,             // 滑块实际边长 l + r * 2 + 3
+      canvas: 'canvas',  // 画布
+      block: 'block',    // 滑块
+      canvasCtx: Object, // 画布 canvas 实例
+      blockCtx: Object,  // 滑块 canvas 实例
+      position: 0,        // 滑块滑动的x轴距离
+      isShowPrompt: true,
+      thirdCtx: Object,
+      third: 'third',
+      thirdW: 220,
+      thirdH: 110,
+    };
+
+    methods = {
+      bindSlideChange(e){
+        this.position = e.detail.x;
+        this.$apply();
+      },
+      bindTouchMove(e) {
+        this.isShowPrompt = false;
+        this.$apply();
+      },
+      createCanvas(e){
+        console.log(e);
+        wx.canvasToTempFilePath({
+          canvasId: e.currentTarget.dataset.canvasid,
+          success: (res) => {
+            wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: (res) => {
+                console.log(res)
+              },
+              fail: (err) => {
+                console.error(err)
+              }
+            })
+          },
+          fail: (err) => {
+            console.error(err)
+          }
+        })
+      },
+      cleanCanvas(){
+        const PI = this.PI, l =this.l, r= this.r, w= this.canvasW, h= this.canvasH;
+        this.canvasCtx.clearRect(0, 0, w, h)
+        this.blockCtx.clearRect(0, 0, w, h)
+        this.thirdCtx.clearRect(0, 0, w, h)
+
+        this.blockW = w
+
+        this.$apply();
+      },
+      refresh(){
+        this._init();
+      }
+    };
+
+    computed = {
+      slideDistance(){
+        return this.position;
+      }
+    };
+
+    async onLoad(options) {
+      await this._init();
+      console.log(111);
+    }
+
+    async _init() {
+      this._getRandomImgSrc();
+      this._initCanvas();
+      await this._initImg();
+    }
+    _initCanvas(){
+      this.canvasCtx = this._createCanvas(this.canvas);
+      this.blockCtx = this._createCanvas(this.block);
+      this.thirdCtx = this._createCanvas(this.third);
+      this.$apply();
+    }
+
+    _getRandomImgSrc() {
+      this.imgSrc='//picsum.photos/300/150/?image=' + this._getRandomNumberByRange(0, 1084);
+      this.$apply();
+    }
+    async _initImg() {
+      this._draw();
+
+      let that= this;
+      const r = this.r,
+        y = this.y - r * 2 + 2,
+        x = this.x,
+        L = this.L,
+        canvasId= 'block';
+
+      this.canvasCtx.draw();
+      this.thirdCtx.draw();
+      this.blockCtx.draw(false, res => {
+        that._canvasPutImageData({x, y, L, canvasId})
+      });
+
+    }
+    _draw() {
+      const L= this.L,
+        r = this.r,
+        w = this.canvasW,
+        h= this.canvasH;
+
+      this.x = this._getRandomNumberByRange(L + 10, w - (L + 10));
+      this.y = this._getRandomNumberByRange(10 + r * 2, h - (L + 10));
+      this.$apply();
+
+      this._drawCanvas({
+        ctx: this.canvasCtx,
+        x: this.x,
+        y: this.y,
+        img: this.imgSrc,
+        operation:'fill'
+      });
+
+      this._drawCanvas({
+        ctx: this.blockCtx,
+        x: this.x,
+        y: this.y,
+        img: this.imgSrc,
+        operation:'clip',
+      });
+
+      this._drawCanvas({
+        ctx: this.thirdCtx,
+        x: this.x,
+        y: this.y,
+        img: this.imgSrc,
+        operation:'clip',
+      });
+    }
+
+    _drawCanvas({ctx, x, y, img, operation, dx = 0, dy = 0}) {
+      const PI = this.PI, l =this.l, r= this.r, w= this.canvasW, h= this.canvasH;
+
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.arc(x + l / 2, y - r + 2, r, 0.72 * PI, 2.26 * PI);
+      ctx.lineTo(x + l, y);
+      ctx.arc(x + l + r - 2, y + l / 2, r, 1.21 * PI, 2.78 * PI);
+      ctx.lineTo(x + l, y + l);
+      ctx.lineTo(x, y + l);
+      ctx.arc(x + r - 2, y + l / 2, r + 0.4, 2.76 * PI, 1.24 * PI, true);
+      ctx.lineTo(x, y);
+      ctx.lineWidth = 2;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.stroke();
+      ctx[operation]();
+      ctx.globalCompositeOperation = 'overlay';
+      ctx.drawImage(img, dx, dy, w, h);
+    }
+
+    _createCanvas(id) {
+      return wx.createCanvasContext(id)
+    }
+
+    _getRandomNumberByRange(start, end) {
+      return Math.round(Math.random() * (end - start) + start)
+    }
+
+    _sum(x, y) {
+      return x + y
+    }
+
+    _square(x) {
+      return x * x
+    }
+
+    _canvasPutImageData({x,y,L,canvasId}){
+      let that= this;
+      wx.canvasGetImageData({
+        canvasId: canvasId,
+        x: x,
+        y: y,
+        width: L,
+        height: L,
+        success(res) {
+          console.log(res, 'get');
+          that.blockW = L;
+          that.$apply();
+
+          wx.canvasPutImageData({
+            canvasId: canvasId,
+            x: 0,
+            y: y,
+            width: L,
+            height: L,
+            data: res.data,
+            success(res) {
+              console.log(res, 'put');
+            },
+            fail(e) {
+              console.log(e);
+            }
+          })
+        },
+        fail(e) {
+          console.log(e);
+        }
+      });
+    }
+
+
+  }
+</script>
+
+<style type="text/scss" lang="scss">
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .jigsaw {
+      width: 235px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-left: 7.5px;
+      padding-right: 7.5px;
+      box-sizing: border-box;
+
+      >.label {
+        width: 100%;
+        height: 35px;
+        line-height: 35px;
+        color: #7d8182;
+        font-size: 14px;
+      }
+
+      .captcha{
+        position: relative;
+
+        .canvas {
+          width: 220px;
+          height: 110px;
+        }
+        .third {
+          width: 220px;
+          height: 110px;
+        }
+        .block {
+          width: 220px;
+          height: 110px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          z-index: 999;
+        }
+
+        .slider-container {
+          box-sizing: border-box;
+          height: 30px;
+          border:1px solid #ebedf1;
+          display: flex;
+          align-items: center;
+          background-color: #f7f9fa;
+          margin-top: 9px;
+          position: relative;
+
+          >movable-area{
+            width: 100%;
+            height: 100%;
+
+            >.slider{
+              box-sizing: border-box;
+              width: 29px;
+              height: 100%;
+              background-color: #ffffff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #5c6269;
+            }
+          }
+
+          .sliderText {
+            position: absolute;
+            left: 50px;
+            top: 6px;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+</style>
+

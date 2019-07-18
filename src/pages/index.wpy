@@ -1,0 +1,350 @@
+<template>
+
+  <view class="btn-container">
+    <button type="primary" bindtap="showModal"> 打开图形验证 </button>
+  </view>
+
+  <JigsawModal :position.sync="jigsawModalPosition" :show.sync="isJigsawModal" :customClass.sync="uniqueClass">
+    <view slot="content" class="jigsaw-modal">
+      <view class="jigsaw">
+        <view class="panel">
+          <view class="panel-header">
+            <view class="prompt">
+              <view class="title"><text class="iconfont iconmianze"></text>请您完成安全认证</view>
+              <view class="desc">
+                为确保该次咨询为真实咨询，劳烦您输入以下验证码，为了给您带来更多优质顺畅的体验，我们一直在努力
+              </view>
+            </view>
+          </view>
+          <view class="panel-content">
+            <view class="wrapper">
+              <view class="captcha">
+                <view class="canvas">
+                  <image src="{{imgSrcObj.canvasSrc}}"></image>
+                </view>
+                <view class="block" style="left:{{xPosition + 'px'}}">
+                  <image src="{{imgSrcObj.blockSrc}}"></image>
+                </view>
+                <view class="refresh-icon" @tap="refresh">
+                  <text class="iconfont iconrefresh"></text>
+                </view>
+                <view class="slider-container">
+                  <view class="slide-mask {{slideState}}" style="width: {{ xPosition + 'px' }};"></view>
+                  <view change:prop="{{jigsawWxs.propObserver}}" prop="{{xPosition}}" class="slider {{slideState}}"
+                        style="left:{{xPosition + 'px'}};" catchtouchstart="{{jigsawWxs.touchstart}}"
+                        catchtouchmove="{{ jigsawWxs.touchmove}}" catchtouchend="{{jigsawWxs.touchend}}">
+                    <text class="iconfont {{slideIcon}}"></text>
+                  </view>
+                  <view class="sliderText" wx:if="{{isShowPrompt}}">向右滑动填充拼图</view>
+                </view>
+              </view>
+              <view class="msg"> {{slideMsg}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </JigsawModal>
+
+</template>
+<script>
+  import wepy from 'wepy'
+  import CustomModal from '@/components/CustomModal';
+  import jigsawWxs from '../wxs/jigsaw.wxs';
+  import { jigsawArr } from '@/utils/helper';
+
+  export default class Result extends wepy.page {
+
+    data = {
+      /* ====== 滑动验证 start======= */
+      jigsawModalPosition: '',
+      isJigsawModal: false,
+      uniqueClass: 'jigsaw-container',
+      imgSrcObj: {},
+      xPosition: 0,
+      slideState: '', // 滑动中 sliding 滑动结束 slideEnd err success
+      slideIcon: 'iconyoujiantou',
+      slideMsg: '',
+      scrollY: true,
+      isShowPrompt:true,
+      isShowChatMsgFake: false
+      /* ====== 滑动验证 end======= */
+    }
+
+    methods = {
+      showModal(){
+        this.isJigsawModal = true;
+        this.$apply();
+
+        this._reset();
+      },
+      /*====滑动验证 start====*/
+      bindTouchstart(e){
+        console.log(e,'startX');
+        this.slideState = 'focus';
+        this.isShowPrompt = false;
+        this.$apply();
+      },
+      async bindTouchEnd(e){
+        const targetX = this.imgSrcObj.x;
+        const currentX = e.left;
+
+        if(this._computeVerifyRes(targetX, currentX)){
+          this.slideMsg = '验证成功';
+          this.slideIcon = 'icongouhao';
+          this.slideState = 'success';
+          this.$apply();
+
+          setTimeout( async ()=> {
+            await this._handleJigsawRes();
+          },800)
+
+        }else{
+          this.slideIcon = 'iconchahao';
+          this.slideState = 'error';
+          this.slideMsg = '验证失败';
+          this.$apply();
+
+          setTimeout(e => {
+            this._reset();
+          }, 1500)
+        }
+
+      },
+      refresh(){
+        this._reset();
+      }
+      /*======滑动验证 end=======*/
+    }
+
+    wxs = {
+      jigsawWxs
+    };
+
+    components = {
+      JigsawModal: CustomModal
+    };
+
+    /*====滑动验证 start====*/
+    _showSlideModal() {    // 展示 滑块窗口 并初始化
+      this.isJigsawModal = true;
+      this.$apply();
+
+      this._reset();
+    }
+    _getRandomImgSrc() {
+      const randomNo = Math.floor(Math.random() * 10);
+
+      this.imgSrcObj = jigsawArr[randomNo];
+      this.$apply();
+    }
+    _computeVerifyRes(target, current) {
+      return target - 5 < current && current < target + 5;
+    }
+    _reset() {
+      this._getRandomImgSrc();
+
+      this.setData({
+        xPosition: 0
+      });
+
+      this.slideState = ''; // 滑动中 sliding 滑动结束 slideEnd err success
+      this.slideIcon = 'iconyoujiantou';
+      this.slideMsg = '';
+      this.$apply();
+    }
+    async _handleJigsawRes(e) {   // 处理滑块验证的结果
+
+      this.isJigsawModal = false;
+      this.$apply();
+    }
+
+    /*======滑动验证 end=======*/
+  }
+
+</script>
+<style lang="scss">
+  @import "../assets/styles/variable";
+
+  .btn-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    >button {
+      width: 80%;
+    }
+  }
+
+  /*========滑动验证 start========*/
+  .jigsaw {
+    width: 100%;
+
+    >.panel {
+      .panel-header {
+        position: relative;
+        text-align: left;
+
+        >.prompt {
+          padding: rpx(15) rpx(45) rpx(15) rpx(45);
+
+          .title {
+            font-size: rpx(36);
+            height: rpx(90);
+            line-height: rpx(90);
+            .iconfont {
+              color: #1b59b7;
+              font-size: rpx(40);
+              margin-right: rpx(10);
+            }
+          }
+
+          .desc {
+            font-size: rpx(28);
+            color: #666666;
+          }
+        }
+      }
+
+      .panel-content {
+        position: relative;
+
+        .wrapper {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding-left: rpx(25);
+          padding-right: rpx(25);
+          box-sizing: border-box;
+          text-align: left;
+          background-color: #ffffff;
+          box-shadow: 0 rpx(8) rpx(16.9) rpx(1.1) rgba(168, 175, 218, 0.28);
+          border-radius: rpx(10);
+
+          .captcha{
+            position: relative;
+
+            .refresh-icon {
+              width: rpx(50);
+              height: rpx(50);
+              position: absolute;
+              right: 0;
+              top: 0;
+              color: #ffffff;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: rpx(44);
+            }
+
+            .canvas {
+              width: 280px;
+              height: 160px;
+              >image {
+                width: 100%;
+                height: 100%;
+              }
+            }
+
+            .block {
+              width: 52px;
+              height: 160px;
+              position: absolute;
+              left: 0;
+              top: 0;
+
+              >image {
+                width: 100%;
+                height: 100%;
+              }
+            }
+
+            .slider-container {
+              box-sizing: border-box;
+              height: rpx(60);
+              border: rpx(2) solid #ebedf1;
+              display: flex;
+              align-items: center;
+              background-color: #f7f9fa;
+              margin-top: rpx(26);
+              position: relative;
+              width: 100%;
+
+              .slide-mask {
+                width: 0;
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: rpx(56);
+                border: 0 solid #367ef9;
+                background: #D1E9FE;
+                box-sizing: border-box;
+
+                &.focus {
+                  border-width: rpx(2) !important;
+                }
+
+                &.error {
+                  border: rpx(2) solid #f57a7a !important;
+                }
+
+                &.success {
+                  border: rpx(2) solid #52ccba !important;
+                }
+              }
+
+              .slider{
+                box-sizing: border-box;
+                width: rpx(56);
+                height: 100%;
+                background-color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #5c6269;
+                position: absolute;
+                left: 0;
+                top: 0;
+
+                &.focus {
+                  background-color: #367ef9;
+                  color: #ffffff;
+                }
+
+                &.error {
+                  background-color: #f57a7a;
+                  color: #ffffff;
+                }
+                &.success {
+                  background-color: #52ccba;
+                  color: #ffffff;
+                }
+              }
+
+              .sliderText {
+                position: absolute;
+                left: 50px;
+                top: 6px;
+                font-size: 12px;
+              }
+            }
+          }
+
+          .msg {
+            height: rpx(60);
+            line-height: rpx(60);
+            text-align: center;
+            color: #333333;
+            font-size: rpx(28);
+          }
+        }
+      }
+    }
+  }
+  /*========= 滑动验证 end =======*/
+  .jigsaw-container .cu-dialog {
+    width: rpx(625);
+  }
+</style>
