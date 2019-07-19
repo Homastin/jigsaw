@@ -2,4 +2,7 @@
 *.js linguist-language=wepy
 *.wxs linguist-language=wepy
 *.png linguist-language=wepy
+*.css linguist-language=wepy
+*.wxss linguist-language=wepy
+*.json linguist-language=wepy
 
