@@ -50,3 +50,7 @@
     |     |-wxs                   // wxs文件
     |
     |-app.wpy            // 主配置
+
+## 3.项目演示
+![avatar](https://homastin.oss-cn-shanghai.aliyuncs.com/github/jiasaw.gif)
+    
