@@ -1,8 +1,8 @@
-*.wpy linguist-language=wepy
-*.js linguist-language=wepy
-*.wxs linguist-language=wepy
-*.png linguist-language=wepy
-*.css linguist-language=wepy
-*.wxss linguist-language=wepy
-*.json linguist-language=wepy
+*.wpy linguist-language=js
+*.js linguist-language=js
+*.wxs linguist-language=js
+*.png linguist-language=js
+*.css linguist-language=js
+*.wxss linguist-language=js
+*.json linguist-language=js
 
