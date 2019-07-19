@@ -1,1 +1,29 @@
-{"pages":["pages/index","pages/canvas"],"tabBar":{"list":[{"pagePath":"pages/index","text":"image","iconPath":"./assets/images/image.png","selectedIconPath":"./assets/images/image_active.png"},{"pagePath":"pages/canvas","text":"canvas","iconPath":"./assets/images/canvas.png","selectedIconPath":"./assets/images/canvas_active.png"}]},"window":{"backgroundTextStyle":"light","navigationBarBackgroundColor":"#fff","navigationBarTitleText":"WeChat","navigationBarTextStyle":"black"}}
+{
+  "pages": [
+    "pages/index",
+    "pages/canvas"
+  ],
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/index",
+        "text": "image",
+        "iconPath": "./assets/images/image.png",
+        "selectedIconPath": "./assets/images/image_active.png"
+      },
+      {
+        "pagePath": "pages/canvas",
+        "text": "canvas",
+        "iconPath": "./assets/images/canvas.png",
+        "selectedIconPath": "./assets/images/canvas_active.png"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black"
+  },
+  "sitemapLocation": "sitemap.json"
+}
