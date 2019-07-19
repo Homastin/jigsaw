@@ -1,0 +1,138 @@
+@import "./../components/CustomModal.wxss";
+@charset "UTF-8";
+/**
+ * @author homastin
+ * @date 2019-05-29 20:42
+ * @Description: css 变量
+*/
+.btn-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .btn-container > button {
+    width: 80%; }
+
+/*========滑动验证 start========*/
+.jigsaw {
+  width: 100%; }
+  .jigsaw > .panel .panel-header {
+    position: relative;
+    text-align: left; }
+    .jigsaw > .panel .panel-header > .prompt {
+      padding: 15rpx 45rpx 15rpx 45rpx; }
+      .jigsaw > .panel .panel-header > .prompt .title {
+        font-size: 36rpx;
+        height: 90rpx;
+        line-height: 90rpx; }
+        .jigsaw > .panel .panel-header > .prompt .title .iconfont {
+          color: #1b59b7;
+          font-size: 40rpx;
+          margin-right: 10rpx; }
+      .jigsaw > .panel .panel-header > .prompt .desc {
+        font-size: 28rpx;
+        color: #666666; }
+  .jigsaw > .panel .panel-content {
+    position: relative; }
+    .jigsaw > .panel .panel-content .wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-left: 25rpx;
+      padding-right: 25rpx;
+      box-sizing: border-box;
+      text-align: left;
+      background-color: #ffffff;
+      box-shadow: 0 8rpx 16.9rpx 1.1rpx rgba(168, 175, 218, 0.28);
+      border-radius: 10rpx; }
+      .jigsaw > .panel .panel-content .wrapper .captcha {
+        position: relative; }
+        .jigsaw > .panel .panel-content .wrapper .captcha .refresh-icon {
+          width: 50rpx;
+          height: 50rpx;
+          position: absolute;
+          right: 0;
+          top: 0;
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 44rpx; }
+        .jigsaw > .panel .panel-content .wrapper .captcha .canvas {
+          width: 280px;
+          height: 160px; }
+          .jigsaw > .panel .panel-content .wrapper .captcha .canvas > image {
+            width: 100%;
+            height: 100%; }
+        .jigsaw > .panel .panel-content .wrapper .captcha .block {
+          width: 52px;
+          height: 160px;
+          position: absolute;
+          left: 0;
+          top: 0; }
+          .jigsaw > .panel .panel-content .wrapper .captcha .block > image {
+            width: 100%;
+            height: 100%; }
+        .jigsaw > .panel .panel-content .wrapper .captcha .slider-container {
+          box-sizing: border-box;
+          height: 60rpx;
+          border: 2rpx solid #ebedf1;
+          display: flex;
+          align-items: center;
+          background-color: #f7f9fa;
+          margin-top: 26rpx;
+          position: relative;
+          width: 100%; }
+          .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slide-mask {
+            width: 0;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 56rpx;
+            border: 0 solid #367ef9;
+            background: #D1E9FE;
+            box-sizing: border-box; }
+            .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slide-mask.focus {
+              border-width: 2rpx !important; }
+            .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slide-mask.error {
+              border: 2rpx solid #f57a7a !important; }
+            .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slide-mask.success {
+              border: 2rpx solid #52ccba !important; }
+          .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slider {
+            box-sizing: border-box;
+            width: 56rpx;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5c6269;
+            position: absolute;
+            left: 0;
+            top: 0; }
+            .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slider.focus {
+              background-color: #367ef9;
+              color: #ffffff; }
+            .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slider.error {
+              background-color: #f57a7a;
+              color: #ffffff; }
+            .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .slider.success {
+              background-color: #52ccba;
+              color: #ffffff; }
+          .jigsaw > .panel .panel-content .wrapper .captcha .slider-container .sliderText {
+            position: absolute;
+            left: 50px;
+            top: 6px;
+            font-size: 12px; }
+      .jigsaw > .panel .panel-content .wrapper .msg {
+        height: 60rpx;
+        line-height: 60rpx;
+        text-align: center;
+        color: #333333;
+        font-size: 28rpx; }
+
+/*========= 滑动验证 end =======*/
+.jigsaw-container .cu-dialog {
+  width: 625rpx; }
