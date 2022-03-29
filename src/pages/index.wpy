@@ -160,6 +160,29 @@
     }
 
     /*======滑动验证 end=======*/
+    /**
+     * 绘制矩形
+     * @param  {MouseEvent} event [鼠标事件]
+     * @param  {Object} start [起始位置]
+     * @return
+     */
+    __drawRect(event, start) {
+      const {
+        context,
+        rect,
+        state
+      } = this
+      const pos = getPos(event, rect)
+      let width = pos.x - start.x
+      let height = pos.y - start.y
+      context.clearRect(0, 0, rect.width, rect.height)
+      context.putImageData(state.lastImageData, 0, 0, 0, 0, rect.width, rect.height)
+      context.save()
+      context.beginPath()
+      context.strokeRect(start.x, start.y, width, height)
+      context.restore()
+      context.closePath()
+    }
   }
 
 </script>
