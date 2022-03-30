@@ -133,6 +133,27 @@
       this.$apply();
     }
 
+    /**
+     * 画笔工具自由绘制
+     * @param  {MouseEvent} event [鼠标事件]
+     * @param  {Object | null} start [起始位置]
+     * @return
+     */
+    __drawBrush(event, start = null) {
+      const {
+        context,
+        rect
+      } = this
+      if (start) {
+        context.beginPath()
+        context.moveTo(start.x, start.y)
+      } else {
+        const pos = getPos(event, rect)
+        context.lineTo(pos.x, pos.y)
+        context.stroke()
+      }
+    }
+
     _getRandomImgSrc() {
       this.imgSrc='//picsum.photos/300/150/?image=' + this._getRandomNumberByRange(0, 1084);
       this.$apply();
